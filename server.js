@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
+
 app.use("/api" , userRouter); 
 
         try {
@@ -24,6 +25,17 @@ app.use("/api" , userRouter);
         } catch (error) {
                  console.log(error)
         }
+
+
+
+
+
+
+
+        app.get('/', (req, res) => {
+            res.send('Server is running');
+        });
+
 
 
 
