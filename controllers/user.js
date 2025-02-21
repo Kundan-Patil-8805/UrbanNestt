@@ -7,6 +7,7 @@ module.exports.signup = async (req, res) => {
         const { name, email, password, number, address } = req.body;
 
         // Validate request body
+       
         if (!name || !email || !password || !number || !address) {
             return res.status(400).json({ message: "All fields are required" });
         }
