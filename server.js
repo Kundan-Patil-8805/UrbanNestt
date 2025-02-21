@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api" , userRouter); 
 
         try {
-            mongoose.connect(process.env.MONGO_URI)
+            mongoose.connect("mongodb+srv://23kundanrajendra:MnRXP5fopDxt4p4j@urbannest.pf1zp.mongodb.net/")
             .then(() => console.log('Connected!'));
             
         } catch (error) {
@@ -39,7 +39,7 @@ app.use("/api" , userRouter);
 
 
 
-        app.listen(process.env.PORT , ()=>{
-            console.log("server is runing on port :",process.env.PORT );
+        app.listen(5000 , ()=>{
+            console.log("server is runing on port :",5000 );
             
         })
