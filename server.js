@@ -18,6 +18,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api" , userRouter); 
 
+app.get('/', (req, res) => {
+    res.send('Server is running');
+});
+
         try {
             mongoose.connect("mongodb+srv://23kundanrajendra:MnRXP5fopDxt4p4j@urbannest.pf1zp.mongodb.net/")
             .then(() => console.log('Connected!'));
@@ -27,14 +31,7 @@ app.use("/api" , userRouter);
         }
 
 
-
-
-
-
-
-        app.get('/', (req, res) => {
-            res.send('Server is running');
-        });
+       
 
 
 
