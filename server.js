@@ -18,12 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api" , userRouter); 
 
-app.get('/', (req, res) => {
-    res.send('Server is running');
-});
-
         try {
-            mongoose.connect("mongodb+srv://23kundanrajendra:MnRXP5fopDxt4p4j@urbannest.pf1zp.mongodb.net/")
+            mongoose.connect(process.env.MONGO_URI)
             .then(() => console.log('Connected!'));
             
         } catch (error) {
@@ -31,12 +27,19 @@ app.get('/', (req, res) => {
         }
 
 
-       
 
 
 
 
-        app.listen(5000 , ()=>{
-            console.log("server is runing on port :",5000 );
+
+        app.get('/', (req, res) => {
+            res.send('Server is running');
+        });
+
+
+
+
+        app.listen(process.env.PORT , ()=>{
+            console.log("server is runing on port :",process.env.PORT );
             
         })
