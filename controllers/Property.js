@@ -1,5 +1,26 @@
 const Property = require("../models/Property");
 
+// Fetch all property listings
+module.exports.listings = async (req, res) => {
+    try {
+        // Fetch all properties from the database
+        const allListings = await Property.find({});
+        
+        // Send the response
+        return res.status(200).json({
+            message: "Listings fetched successfully!",
+            data: allListings,
+        });
+    } catch (error) {
+        // Handle errors
+        return res.status(500).json({
+            message: "Error while fetching listings.",
+            error: error.message,
+        });
+    }
+};
+
+// Add a new property
 module.exports.add = async (req, res) => {
     try {
         const {
@@ -10,7 +31,7 @@ module.exports.add = async (req, res) => {
             city,
             country,
             userEmail,
-            images, 
+            images,
             facilities,
             bedroomNum,
             balconyNum,
@@ -32,9 +53,9 @@ module.exports.add = async (req, res) => {
             !furnish ||
             petFriendly === undefined
         ) {
-            return res
-                .status(400)
-                .json({ message: "All required fields must be provided." });
+            return res.status(400).json({
+                message: "All required fields must be provided.",
+            });
         }
 
         // Create a new Property instance
@@ -46,7 +67,7 @@ module.exports.add = async (req, res) => {
             city,
             country,
             userEmail,
-            images, 
+            images,
             facilities,
             bedroomNum,
             balconyNum,
@@ -54,22 +75,19 @@ module.exports.add = async (req, res) => {
             petFriendly,
         });
 
-        // Save property to the database
+        // Save the property to the database
         const savedProperty = await newProperty.save();
 
-        res.status(201).json({
+        // Send success response
+        return res.status(201).json({
             message: "Property added successfully!",
             property: savedProperty,
         });
     } catch (error) {
-        res.status(500).json({
+        // Handle errors
+        return res.status(500).json({
             message: "An error occurred while adding the property.",
             error: error.message,
         });
     }
 };
-
-
-
-
-

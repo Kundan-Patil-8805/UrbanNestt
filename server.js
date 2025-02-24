@@ -14,7 +14,7 @@ const cloudinary = require("./utils/cloudinary");
 
 
 
- app.use(bodyParser.json());
+app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use("/api" , userRouter); 
-app.use("/listing" ,propertyRouter);
+app.use("/listings" ,propertyRouter);
 
         try {
             mongoose.connect(process.env.MONGO_URI)
