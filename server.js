@@ -4,8 +4,14 @@ const app = express();
 const mongoose = require("mongoose");
 const userRouter = require("./router/user")
 const cors = require('cors');
-const bcrypt = require('bcrypt');
+
 const bodyParser = require('body-parser');
+const propertyRouter = require("./router/Property")
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
+const cloudinary = require("./utils/cloudinary");
+
 
 
  app.use(bodyParser.json());
@@ -17,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use("/api" , userRouter); 
+app.use("/listing" ,propertyRouter);
 
         try {
             mongoose.connect(process.env.MONGO_URI)
