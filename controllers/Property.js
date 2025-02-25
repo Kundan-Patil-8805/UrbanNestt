@@ -1,4 +1,9 @@
 const Property = require("../models/Property");
+const fs = require("fs");
+const multer = require("multer");
+
+
+
 
 // Fetch all property listings
 module.exports.listings = async (req, res) => {
@@ -20,7 +25,14 @@ module.exports.listings = async (req, res) => {
     }
 };
 
-// Add a new property
+
+
+
+const storage = multer.memoryStorage();
+
+
+const upload = multer({storage});
+
 module.exports.add = async (req, res) => {
     try {
         const {
@@ -31,7 +43,6 @@ module.exports.add = async (req, res) => {
             city,
             country,
             userEmail,
-            images,
             facilities,
             bedroomNum,
             balconyNum,
@@ -39,7 +50,6 @@ module.exports.add = async (req, res) => {
             petFriendly,
         } = req.body;
 
-        // Check if all required fields are provided
         if (
             !title ||
             !description ||
@@ -50,13 +60,18 @@ module.exports.add = async (req, res) => {
             !userEmail ||
             !bedroomNum ||
             !balconyNum ||
-            !furnish ||
-            petFriendly === undefined
+            typeof furnish === "undefined" ||
+            typeof petFriendly === "undefined"
         ) {
             return res.status(400).json({
                 message: "All required fields must be provided.",
             });
         }
+
+        // Convert image to Base64 if provided
+        const base64Images = req.file
+            ? req.file.buffer.toString("base64")
+            : null;
 
         // Create a new Property instance
         const newProperty = new Property({
@@ -67,7 +82,7 @@ module.exports.add = async (req, res) => {
             city,
             country,
             userEmail,
-            images,
+            images: base64Images, // Store Base64 image
             facilities,
             bedroomNum,
             balconyNum,
@@ -78,19 +93,18 @@ module.exports.add = async (req, res) => {
         // Save the property to the database
         const savedProperty = await newProperty.save();
 
-        // Send success response
         return res.status(201).json({
             message: "Property added successfully!",
             property: savedProperty,
         });
     } catch (error) {
-        // Handle errors
         return res.status(500).json({
             message: "An error occurred while adding the property.",
             error: error.message,
         });
     }
 };
+
 
 module.exports.edit = async (req, res) => {
     try {

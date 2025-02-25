@@ -62,7 +62,8 @@ const propertySchema = mongoose.Schema({
     },
     petFriendly: {
         type: Boolean,
-        required: true
+        required: true,
+        default : true,
     },
     // publisher: {
     //     type: mongoose.Schema.Types.ObjectId,

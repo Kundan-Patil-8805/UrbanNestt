@@ -1,9 +1,9 @@
 const propertyRouter = require("../controllers/Property");
 const express = require("express");
 const router = express.Router();
-
+const upload = require("../middleware/multer")
 // Add a property
-router.post("/add", propertyRouter.add);
+router.post("/add", upload.single("images"),propertyRouter.add);
 
 // Fetch all property listings
 router.get("/", propertyRouter.listings);

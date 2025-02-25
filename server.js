@@ -8,7 +8,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const propertyRouter = require("./router/Property")
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+//const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 const cloudinary = require("./utils/cloudinary");
 
