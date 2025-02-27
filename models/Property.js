@@ -2,12 +2,7 @@ const mongoose = require("mongoose");
 
 const propertySchema = new mongoose.Schema(
     {
-        id: {
-            type: Number,
-            required: [true, "Property ID is required"],
-            unique: true,
-            index: true,
-        },
+        
         title: {
             type: String,
             required: [true, "Title is required"],
