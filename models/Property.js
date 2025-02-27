@@ -1,76 +1,75 @@
 const mongoose = require("mongoose");
 const User = require("./user.js")
+
 const propertySchema = mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        trim: true
+    id: Number,
+    title: String,
+    address: String,
+    reg_no: String,
+    contact: String,
+    not_pet_friendly: Boolean,
+    description: String,
+    property_type: String,
+    facing: String,
+    bedrooms: Number,
+    balcony: Number,
+    total_area: String,
+    price_per_sq_ft: String,
+    floor: String,
+    age: String,
+    parking_available: Boolean,
+    furnish: String,
+    situation: String,
+    price: String,
+    luxury: String,
+    swimming_pool: String,
+    playground: String,
+    visitors_parking: String,
+    intercom_facility: String,
+    power_backup: String,
+    fire_safety_installed: Boolean,
+    neighborhood_perks: {
+        market: {
+            name: String,
+            distance: String
+        },
+        public_transport: {
+            name: String,
+            distance: String
+        },
+        mall: {
+            name: String,
+            distance: String
+        },
+        hospital: {
+            name: String,
+            distance: String
+        },
+        restaurant: {
+            name: String,
+            distance: String
+        },
+        school: {
+            name: String,
+            distance: String
+        },
+        college: {
+            name: String,
+            distance: String
+        }
     },
-    description: {
-        type: String,
-        required: true,
-        trim: true
+    geojson: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            required: true
+        }
     },
-    price: {
-        type: Number,
-        required: true,
-        min: 0
-    },
-    address: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    city: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    country: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    userEmail: {
-        type: String,
-        required: true,
-       
-        trim: true
-    },
-    images: {
-        type: String, 
-        default : "https://images.unsplash.com/photo-1584738766473-61c083514bf4?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    },
-    facilities: {
-        type: [String], 
-        required: false
-    },
-    bedroomNum: {
-        type: Number,
-        required: true,
-        min: 0
-    },
-    balconyNum: {
-        type: Number,
-        required: true,
-        min: 0
-    },
-    furnish: {
-        type: String,
-        required: true,
-        enum: ["Furnished", "Semi-Furnished", "Unfurnished"] 
-    },
-    petFriendly: {
-        type: Boolean,
-        required: true,
-        default : true,
-    },
-    // publisher: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User", // Name of the User model
-    //     required: true
-    // }
-    
+    images: [String] // Array of image URLs
 }, { timestamps: true });
 
 const Property = mongoose.model("Property", propertySchema);

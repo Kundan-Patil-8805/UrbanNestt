@@ -2,149 +2,102 @@ const Property = require("../models/Property");
 const fs = require("fs");
 const multer = require("multer");
 
-
-
+// Multer configuration for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // Fetch all property listings
 module.exports.listings = async (req, res) => {
     try {
-        // Fetch all properties from the database
-        const allListings = await Property.find({});
-        
-        // Send the response
-        return res.status(200).json({
-            message: "Listings fetched successfully!",
-            data: allListings,
-        });
+        const properties = await Property.find();
+        res.status(200).json(properties);
     } catch (error) {
-        // Handle errors
-        return res.status(500).json({
-            message: "Error while fetching listings.",
-            error: error.message,
-        });
+        res.status(500).json({ message: 'Error fetching properties', error });
     }
 };
 
-
-
-
-const storage = multer.memoryStorage();
-
-
-const upload = multer({storage});
-
+// Add a new property
 module.exports.add = async (req, res) => {
     try {
         const {
-            title,
-            description,
-            price,
-            address,
-            city,
-            country,
-            userEmail,
-            facilities,
-            bedroomNum,
-            balconyNum,
-            furnish,
-            petFriendly,
+            id, title, address, reg_no, contact, not_pet_friendly, description,
+            property_type, facing, bedrooms, balcony, total_area, price_per_sq_ft,
+            floor, age, parking_available, furnish, situation, price, luxury,
+            swimming_pool, playground, visitors_parking, intercom_facility, power_backup,
+            fire_safety_installed, neighborhood_perks, geojson, images
         } = req.body;
 
-        if (
-            !title ||
-            !description ||
-            !price ||
-            !address ||
-            !city ||
-            !country ||
-            !userEmail ||
-            !bedroomNum ||
-            !balconyNum ||
-            typeof furnish === "undefined" ||
-            typeof petFriendly === "undefined"
-        ) {
-            return res.status(400).json({
-                message: "All required fields must be provided.",
-            });
-        }
-
-        // Convert image to Base64 if provided
-        const base64Images = req.file
-            ? req.file.buffer.toString("base64")
-            : null;
-
-        // Create a new Property instance
+        // Create a new property document
         const newProperty = new Property({
+            id,
             title,
-            description,
-            price,
             address,
-            city,
-            country,
-            userEmail,
-            images: base64Images, // Store Base64 image
-            facilities,
-            bedroomNum,
-            balconyNum,
+            reg_no,
+            contact,
+            not_pet_friendly,
+            description,
+            property_type,
+            facing,
+            bedrooms,
+            balcony,
+            total_area,
+            price_per_sq_ft,
+            floor,
+            age,
+            parking_available,
             furnish,
-            petFriendly,
+            situation,
+            price,
+            luxury,
+            swimming_pool,
+            playground,
+            visitors_parking,
+            intercom_facility,
+            power_backup,
+            fire_safety_installed,
+            neighborhood_perks,
+            geojson,
+            images
         });
 
         // Save the property to the database
         const savedProperty = await newProperty.save();
-
-        return res.status(201).json({
-            message: "Property added successfully!",
-            property: savedProperty,
+        res.status(201).json({
+            message: 'Property created successfully',
+            property: savedProperty
         });
     } catch (error) {
-        return res.status(500).json({
-            message: "An error occurred while adding the property.",
-            error: error.message,
-        });
+        res.status(500).json({ message: 'Error creating property', error });
     }
 };
 
-
+// Edit an existing property
 module.exports.edit = async (req, res) => {
     try {
-        const { id } = req.params; 
-        const updates = req.body; 
+        const propertyId = req.params.id;
+        const updatedData = req.body;
 
-        // Validate property ID
-        if (!id) {
-            return res.status(400).json({ message: "Property ID is required." });
-        }
-
-        // Find the property by ID and update it
-        const updatedProperty = await Property.findByIdAndUpdate(
-            id,         // ID of the property to update
-            updates,    // Updated fields
-            { new: true, runValidators: true } // Options: return updated document, validate updates
+        const updatedProperty = await Property.findOneAndUpdate(
+            { id: propertyId },
+            updatedData,
+            { new: true, runValidators: true }
         );
 
-        // If the property is not found
         if (!updatedProperty) {
-            return res.status(404).json({ message: "Property not found." });
+            return res.status(404).json({ message: 'Property not found' });
         }
 
-        // Send success response
-        return res.status(200).json({
-            message: "Property updated successfully!",
-            property: updatedProperty,
+        res.status(200).json({
+            message: 'Property updated successfully',
+            property: updatedProperty
         });
     } catch (error) {
-        // Handle errors
-        return res.status(500).json({
-            message: "An error occurred while updating the property.",
-            error: error.message,
-        });
+        res.status(500).json({ message: 'Error updating property', error });
     }
 };
 
+// Show a specific property by ID
 module.exports.show = async (req, res) => {
-
-
     try {
         const { id } = req.params; // Get the ID from the URL params
 
@@ -166,4 +119,12 @@ module.exports.show = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+// Export all functions
+module.exports = {
+    listings: module.exports.listings,
+    add: module.exports.add,
+    edit: module.exports.edit,
+    show: module.exports.show
 };

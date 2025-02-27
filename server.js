@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use("/api" , userRouter); 
-app.use("/listings" ,propertyRouter);
+app.use("/properties" ,propertyRouter);
 
         try {
             mongoose.connect(process.env.MONGO_URI)
