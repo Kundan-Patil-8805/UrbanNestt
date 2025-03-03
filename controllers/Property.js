@@ -7,57 +7,108 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Fetch all property listings
-module.exports.listings = async (req, res) => {
+const listings = async (req, res) => {
     try {
         const properties = await Property.find();
         res.status(200).json(properties);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching properties', error });
+        console.error('Error fetching properties:', error);
+        res.status(500).json({ message: 'Error fetching properties', error: error.message });
     }
 };
 
 // Add a new property
-module.exports.add = async (req, res) => {
+const add = async (req, res) => {
     try {
         const {
-            id, title, address, reg_no, contact, not_pet_friendly, description,
-            property_type, facing, bedrooms, balcony, total_area, price_per_sq_ft,
-            floor, age, parking_available, furnish, situation, price, luxury,
-            swimming_pool, playground, visitors_parking, intercom_facility, power_backup,
-            fire_safety_installed, neighborhood_perks, geojson, images
+            PROPERTY_TYPE,
+            SOCIETY_NAME,
+            CITY,
+            location,
+            BEDROOM_NUM,
+            BALCONY_NUM,
+            AREA,
+            Price_per_sqft,
+            PRICE,
+            AGE,
+            FURNISH,
+            amenity_luxury,
+            FLOOR_NUM,
+            LATITUDE,
+            LONGITUDE,
+            TOTAL_FLOOR,
+            DESCRIPTION,
+            Facing_Direction,
+            Image,
+            Loan_Availability,
+            Estimated_Monthly_EMI,
+            Maintenance_Fees,
+            Property_Tax,
+            Stamp_Duty_Registration_Costs,
+            Nearest_Schools,
+            Nearest_Colleges,
+            Nearest_Hospitals,
+            Nearest_Markets,
+            Nearest_Public_Transport,
+            Nearest_Restaurants,
+            Nearest_Railway_Stations,
+            Nearest_Malls,
+            Swimming_Pool,
+            Playground,
+            RERA_Registration_Number,
+            
+            Visitor_Parking,
+            Intercom_Facility,
+            Power_Backup,
+            Water_Supply,
+            Pet_Friendly,
+            Fire_Safety_Installed
         } = req.body;
 
         // Create a new property document
         const newProperty = new Property({
-            id,
-            title,
-            address,
-            reg_no,
-            contact,
-            not_pet_friendly,
-            description,
-            property_type,
-            facing,
-            bedrooms,
-            balcony,
-            total_area,
-            price_per_sq_ft,
-            floor,
-            age,
-            parking_available,
-            furnish,
-            situation,
-            price,
-            luxury,
-            swimming_pool,
-            playground,
-            visitors_parking,
-            intercom_facility,
-            power_backup,
-            fire_safety_installed,
-            neighborhood_perks,
-            geojson,
-            images
+            PROPERTY_TYPE,
+            SOCIETY_NAME,
+            CITY,
+            location,
+            BEDROOM_NUM,
+            BALCONY_NUM,
+            AREA,
+            Price_per_sqft,
+            PRICE,
+            AGE,
+            FURNISH,
+            amenity_luxury,
+            FLOOR_NUM,
+            LATITUDE,
+            LONGITUDE,
+            TOTAL_FLOOR,
+            DESCRIPTION,
+            Facing_Direction,
+            Image,
+            Loan_Availability,
+            Estimated_Monthly_EMI,
+            Maintenance_Fees,
+            Property_Tax,
+            Stamp_Duty_Registration_Costs,
+            Nearest_Schools,
+            Nearest_Colleges,
+            Nearest_Hospitals,
+            Nearest_Markets,
+            Nearest_Public_Transport,
+            Nearest_Restaurants,
+            Nearest_Railway_Stations,
+            Nearest_Malls,
+            Swimming_Pool,
+            Playground,
+            RERA_Registration_Number,
+            
+            Visitor_Parking,
+            Intercom_Facility,
+            Power_Backup,
+            Water_Supply,
+            Pet_Friendly,
+            Fire_Safety_Installed
         });
 
         // Save the property to the database
@@ -67,18 +118,19 @@ module.exports.add = async (req, res) => {
             property: savedProperty
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating property', error });
+        console.error('Error creating property:', error);
+        res.status(500).json({ message: 'Error creating property', error: error.message });
     }
 };
 
 // Edit an existing property
-module.exports.edit = async (req, res) => {
+const edit = async (req, res) => {
     try {
         const propertyId = req.params.id;
         const updatedData = req.body;
 
-        const updatedProperty = await Property.findOneAndUpdate(
-            { id: propertyId },
+        const updatedProperty = await Property.findByIdAndUpdate(
+            propertyId,
             updatedData,
             { new: true, runValidators: true }
         );
@@ -92,12 +144,13 @@ module.exports.edit = async (req, res) => {
             property: updatedProperty
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating property', error });
+        console.error('Error updating property:', error);
+        res.status(500).json({ message: 'Error updating property', error: error.message });
     }
 };
 
 // Show a specific property by ID
-module.exports.show = async (req, res) => {
+const show = async (req, res) => {
     try {
         const { id } = req.params; // Get the ID from the URL params
 
@@ -114,6 +167,7 @@ module.exports.show = async (req, res) => {
             property,
         });
     } catch (error) {
+        console.error('Error fetching property:', error);
         return res.status(500).json({
             message: "An error occurred while fetching the property.",
             error: error.message,
@@ -123,8 +177,8 @@ module.exports.show = async (req, res) => {
 
 // Export all functions
 module.exports = {
-    listings: module.exports.listings,
-    add: module.exports.add,
-    edit: module.exports.edit,
-    show: module.exports.show
+    listings,
+    add,
+    edit,
+    show
 };

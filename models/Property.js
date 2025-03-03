@@ -1,198 +1,189 @@
 const mongoose = require("mongoose");
 
+// Define the nearestSchema first
+const nearestSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    distance: {
+        type: Number,
+        required: true,
+    },
+}, { _id: false });
+
+// Define the propertySchema
 const propertySchema = new mongoose.Schema(
     {
+        PROPERTY_TYPE: {
+            type: String,
+            required: true,
+        },
+        SOCIETY_NAME: {
+            type: String,
+            required: true,
+        },
+        CITY: {
+            type: String,
+            required: true,
+        },
+        location: {
+            type: String,
+            required: true,
+        },
+        BEDROOM_NUM: {
+            type: Number,
+            required: true,
+        },
+        BALCONY_NUM: {
+            type: Number,
+            required: true,
+        },
+        AREA: {
+            type: Number,
+            required: true,
+        },
+        Price_per_sqft: {
+            type: Number,
+            required: true,
+        },
+        PRICE: {
+            type: Number,
+            required: true,
+        },
+        AGE: {
+            type: String,
+            required: true,
+        },
+        FURNISH: {
+            type: String,
+            required: true,
+        },
+        amenity_luxury: {
+            type: String, 
+            required: true,
+        },
+        FLOOR_NUM: {
+            type: String,
+            required: true,
+        },
+        LATITUDE: {
+            type: Number,
+            required: true,
+        },
+        LONGITUDE: {
+            type: Number,
+            required: true,
+        },
+        TOTAL_FLOOR: {
+            type: Number,
+            required: true,
+        },
+        DESCRIPTION: {
+            type: String,
+            required: true,
+        },
+        Facing_Direction: {
+            type: String,
+            required: true,
+        },
+        Image: {
+            type: String,
+            required: true,
+        },
+        Loan_Availability: {
+            type: Boolean,
+            required: true,
+        },
+        Estimated_Monthly_EMI: {
+            type: Number,
+            required: true,
+        },
+        Maintenance_Fees: {
+            type: Number,
+            required: true,
+        },
+        Property_Tax: {
+            type: Number,
+            required: true,
+        },
+        Stamp_Duty_Registration_Costs: {
+            type: Number,
+            required: true,
+        },
+        Nearest_Schools: {
+            type: [nearestSchema],
+            default: [],
+        },
+        Nearest_Colleges: {
+            type: [nearestSchema], 
+            default: [],
+        },
+        Nearest_Hospitals: {
+            type: [nearestSchema], 
+            default: [],
+        },
+        Nearest_Markets: {
+            type: [nearestSchema], 
+            default: [],
+        },
+        Nearest_Public_Transport: {
+            type: [nearestSchema], 
+            default: [],
+        },
+        Nearest_Restaurants: {
+            type: [nearestSchema],
+            default: [],
+        },
+        Nearest_Railway_Stations: {
+            type: [nearestSchema], 
+            default: [],
+        },
+        Nearest_Malls: {
+            type: [nearestSchema],
+            default: [],
+        },
+        Swimming_Pool: {
+            type: Boolean,
+            required: true,
+        },
+        Playground: {
+            type: Boolean,
+            required: true,
+        },
+        RERA_Registration_Number: {
+            type: Number,
+            required: true,
+        },
         
-        title: {
-            type: String,
-            required: [true, "Title is required"],
-            trim: true,
-            maxlength: [100, "Title cannot exceed 100 characters"],
-        },
-        address: {
-            type: String,
-            required: [true, "Address is required"],
-            trim: true,
-            maxlength: [200, "Address cannot exceed 200 characters"],
-        },
-        reg_no: {
-            type: String,
-            required: [true, "Registration number is required"],
-            unique: true,
-            trim: true,
-        },
-        contact: {
-            type: String,
-            required: [true, "Contact number is required"],
-            validate: {
-                validator: function (v) {
-                    return /^\+?\d{10,12}$/.test(v); // Validates phone numbers
-                },
-                message: (props) => `${props.value} is not a valid phone number!`,
-            },
-        },
-        not_pet_friendly: {
+        Visitor_Parking: {
             type: Boolean,
-            default: false,
+            required: true,
         },
-        description: {
-            type: String,
-            required: [true, "Description is required"],
-            trim: true,
-            maxlength: [1000, "Description cannot exceed 1000 characters"],
-        },
-        property_type: {
-            type: String,
-            required: [true, "Property type is required"],
-            enum: ["Apartment", "Villa", "Studio", "Penthouse", "Farmhouse"],
-        },
-        facing: {
-            type: String,
-            required: [true, "Facing direction is required"],
-            enum: ["North", "South", "East", "West"],
-        },
-        bedrooms: {
-            type: Number,
-            required: [true, "Number of bedrooms is required"],
-            min: [1, "Bedrooms must be at least 1"],
-        },
-        balcony: {
-            type: Number,
-            required: [true, "Number of balconies is required"],
-            min: [0, "Balconies cannot be negative"],
-        },
-        total_area: {
-            type: String,
-            required: [true, "Total area is required"],
-            trim: true,
-        },
-        price_per_sq_ft: {
-            type: String,
-            required: [true, "Price per sq. ft. is required"],
-            trim: true,
-        },
-        floor: {
-            type: String,
-            required: [true, "Floor details are required"],
-            trim: true,
-        },
-        age: {
-            type: String,
-            required: [true, "Age of the property is required"],
-            trim: true,
-        },
-        parking_available: {
+        Intercom_Facility: {
             type: Boolean,
-            default: true,
+            required: true,
         },
-        furnish: {
-            type: String,
-            required: [true, "Furnish type is required"],
-            enum: ["Fully Furnished", "Semi-Furnished", "Unfurnished"],
-        },
-        situation: {
-            type: String,
-            required: [true, "Situation is required"],
-            enum: ["Ready to Move", "Under Construction"],
-        },
-        price: {
-            type: String,
-            required: [true, "Price is required"],
-            trim: true,
-        },
-        luxury: {
-            type: String,
-            required: [true, "Luxury level is required"],
-            enum: ["Low", "Medium", "High", "Premium"],
-        },
-        swimming_pool: {
-            type: String,
-            required: [true, "Swimming pool details are required"],
-            enum: ["Yes", "No"],
-        },
-        playground: {
-            type: String,
-            required: [true, "Playground details are required"],
-            enum: ["Yes", "No"],
-        },
-        visitors_parking: {
-            type: String,
-            required: [true, "Visitors parking details are required"],
-            enum: ["Yes", "No"],
-        },
-        intercom_facility: {
-            type: String,
-            required: [true, "Intercom facility details are required"],
-            enum: ["Yes", "No"],
-        },
-        power_backup: {
-            type: String,
-            required: [true, "Power backup details are required"],
-            enum: ["Yes", "No"],
-        },
-        fire_safety_installed: {
+        Power_Backup: {
             type: Boolean,
-            default: true,
+            required: true,
         },
-        neighborhood_perks: {
-            market: {
-                name: { type: String, trim: true },
-                distance: { type: String, trim: true },
-            },
-            public_transport: {
-                name: { type: String, trim: true },
-                distance: { type: String, trim: true },
-            },
-            mall: {
-                name: { type: String, trim: true },
-                distance: { type: String, trim: true },
-            },
-            hospital: {
-                name: { type: String, trim: true },
-                distance: { type: String, trim: true },
-            },
-            restaurant: {
-                name: { type: String, trim: true },
-                distance: { type: String, trim: true },
-            },
-            school: {
-                name: { type: String, trim: true },
-                distance: { type: String, trim: true },
-            },
-            college: {
-                name: { type: String, trim: true },
-                distance: { type: String, trim: true },
-            },
+        Water_Supply: {
+            type: String,
+            required: true,
         },
-        geojson: {
-            type: {
-                type: String,
-                enum: ["Point"],
-                default : "Point",
-                required: true,
-            },
-            coordinates: {
-                type: [Number], // [longitude, latitude]
-                required: true,
-            },
+        Pet_Friendly: {
+            type: Boolean,
+            required: true,
         },
-        images: {
-            type: [String], // Array of image URLs
-            validate: {
-                validator: function (v) {
-                    return v.length <= 10; // Maximum 10 images
-                },
-                message: "Cannot upload more than 10 images",
-            },
+        Fire_Safety_Installed: {
+            type: Boolean,
+            required: true,
         },
-    },
-    { timestamps: true }
-);
+    });
 
-// Add a 2dsphere index for geospatial queries
-//propertySchema.index({ geojson: "2dsphere" });
-
-// Create the model
+// Create the Property model
 const Property = mongoose.model("Property", propertySchema);
 
+// Export the Property model
 module.exports = Property;
