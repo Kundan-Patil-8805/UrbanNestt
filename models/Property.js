@@ -1,189 +1,182 @@
-const mongoose = require("mongoose");
+const Property = require("../models/Property");
+const fs = require("fs");
+const multer = require("multer");
 
-// Define the nearestSchema first
-const nearestSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    distance: {
-        type: Number,
-        required: true,
-    },
-}, { _id: false });
+// Multer configuration for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-// Define the propertySchema
-const propertySchema = new mongoose.Schema(
-    {
-        PROPERTY_TYPE: {
-            type: String,
-            required: true,
-        },
-        SOCIETY_NAME: {
-            type: String,
-            required: true,
-        },
-        CITY: {
-            type: String,
-            required: true,
-        },
-        location: {
-            type: String,
-            required: true,
-        },
-        BEDROOM_NUM: {
-            type: Number,
-            required: true,
-        },
-        BALCONY_NUM: {
-            type: Number,
-            required: true,
-        },
-        AREA: {
-            type: Number,
-            required: true,
-        },
-        Price_per_sqft: {
-            type: Number,
-            required: true,
-        },
-        PRICE: {
-            type: Number,
-            required: true,
-        },
-        AGE: {
-            type: String,
-            required: true,
-        },
-        FURNISH: {
-            type: String,
-            required: true,
-        },
-        amenity_luxury: {
-            type: String, 
-            required: true,
-        },
-        FLOOR_NUM: {
-            type: String,
-            required: true,
-        },
-        LATITUDE: {
-            type: Number,
-            required: true,
-        },
-        LONGITUDE: {
-            type: Number,
-            required: true,
-        },
-        TOTAL_FLOOR: {
-            type: Number,
-            required: true,
-        },
-        DESCRIPTION: {
-            type: String,
-            required: true,
-        },
-        Facing_Direction: {
-            type: String,
-            required: true,
-        },
-        Image: {
-            type: String,
-            required: true,
-        },
-        Loan_Availability: {
-            type: Boolean,
-            required: true,
-        },
-        Estimated_Monthly_EMI: {
-            type: Number,
-            required: true,
-        },
-        Maintenance_Fees: {
-            type: Number,
-            required: true,
-        },
-        Property_Tax: {
-            type: Number,
-            required: true,
-        },
-        Stamp_Duty_Registration_Costs: {
-            type: Number,
-            required: true,
-        },
-        Nearest_Schools: {
-            type: [nearestSchema],
-            default: [],
-        },
-        Nearest_Colleges: {
-            type: [nearestSchema], 
-            default: [],
-        },
-        Nearest_Hospitals: {
-            type: [nearestSchema], 
-            default: [],
-        },
-        Nearest_Markets: {
-            type: [nearestSchema], 
-            default: [],
-        },
-        Nearest_Public_Transport: {
-            type: [nearestSchema], 
-            default: [],
-        },
-        Nearest_Restaurants: {
-            type: [nearestSchema],
-            default: [],
-        },
-        Nearest_Railway_Stations: {
-            type: [nearestSchema], 
-            default: [],
-        },
-        Nearest_Malls: {
-            type: [nearestSchema],
-            default: [],
-        },
-        Swimming_Pool: {
-            type: Boolean,
-            required: true,
-        },
-        Playground: {
-            type: Boolean,
-            required: true,
-        },
-        RERA_Registration_Number: {
-            type: Number,
-            required: true,
-        },
-        
-        Visitor_Parking: {
-            type: Boolean,
-            required: true,
-        },
-        Intercom_Facility: {
-            type: Boolean,
-            required: true,
-        },
-        Power_Backup: {
-            type: Boolean,
-            required: true,
-        },
-        Water_Supply: {
-            type: String,
-            required: true,
-        },
-        Pet_Friendly: {
-            type: Boolean,
-            required: true,
-        },
-        Fire_Safety_Installed: {
-            type: Boolean,
-            required: true,
-        },
-    });
+// Fetch all property listings
+const listings = async (req, res) => {
+    try {
+        const properties = await Property.find();
+        res.status(200).json(properties);
+    } catch (error) {
+        console.error('Error fetching properties:', error);
+        res.status(500).json({ message: 'Error fetching properties', error: error.message });
+    }
+};
 
-// Create the Property model
-const Property = mongoose.model("Property", propertySchema);
+// Add a new property
+const add = async (req, res) => {
+    try {
+        const {
+            property_type,
+            society_name,
+            city,
+            location,
+            bedroom_num,
+            balcony_num,
+            area,
+            price_per_sqft,
+            price,
+            age,
+            furnish,
+            amenity_luxury,
+            floor_num,
+            latitude,
+            longitude,
+            total_floor,
+            description,
+            facing_direction,
+            image,
+            loan_availability,
+            estimated_monthly_emi,
+            maintenance_fees,
+            property_tax,
+            stamp_duty_registration_costs,
+            nearest_schools,
+            nearest_colleges,
+            nearest_hospitals,
+            nearest_markets,
+            nearest_public_transport,
+            nearest_restaurants,
+            nearest_railway_stations,
+            nearest_malls,
+            swimming_pool,
+            playground,
+            rera_registration_number,
+            visitor_parking,
+            intercom_facility,
+            power_backup,
+            water_supply,
+            pet_friendly,
+            fire_safety_installed
+        } = req.body;
 
-// Export the Property model
-module.exports = Property;
+        // Create a new property document
+        const newProperty = new Property({
+            property_type,
+            society_name,
+            city,
+            location,
+            bedroom_num,
+            balcony_num,
+            area,
+            price_per_sqft,
+            price,
+            age,
+            furnish,
+            amenity_luxury,
+            floor_num,
+            latitude,
+            longitude,
+            total_floor,
+            description,
+            facing_direction,
+            image,
+            loan_availability,
+            estimated_monthly_emi,
+            maintenance_fees,
+            property_tax,
+            stamp_duty_registration_costs,
+            nearest_schools,
+            nearest_colleges,
+            nearest_hospitals,
+            nearest_markets,
+            nearest_public_transport,
+            nearest_restaurants,
+            nearest_railway_stations: nearest_railway_stations, // Corrected typo
+            nearest_malls,
+            swimming_pool,
+            playground,
+            rera_registration_number,
+            visitor_parking,
+            intercom_facility,
+            power_backup,
+            water_supply,
+            pet_friendly,
+            fire_safety_installed
+        });
+
+        // Save the property to the database
+        const savedProperty = await newProperty.save();
+        res.status(201).json({
+            message: 'Property created successfully',
+            property: savedProperty
+        });
+    } catch (error) {
+        console.error('Error creating property:', error);
+        res.status(500).json({ message: 'Error creating property', error: error.message });
+    }
+};
+
+// Edit an existing property
+const edit = async (req, res) => {
+    try {
+        const propertyId = req.params.id;
+        const updatedData = req.body;
+
+        const updatedProperty = await Property.findByIdAndUpdate(
+            propertyId,
+            updatedData,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedProperty) {
+            return res.status(404).json({ message: 'Property not found' });
+        }
+
+        res.status(200).json({
+            message: 'Property updated successfully',
+            property: updatedProperty
+        });
+    } catch (error) {
+        console.error('Error updating property:', error);
+        res.status(500).json({ message: 'Error updating property', error: error.message });
+    }
+};
+
+// Show a specific property by ID
+const show = async (req, res) => {
+    try {
+        const { id } = req.params; // Get the ID from the URL params
+
+        // Find the property by ID
+        const property = await Property.findById(id);
+
+        if (!property) {
+            return res.status(404).json({ message: "Property not found." });
+        }
+
+        // Return the property data
+        return res.status(200).json({
+            message: "Property fetched successfully!",
+            property,
+        });
+    } catch (error) {
+        console.error('Error fetching property:', error);
+        return res.status(500).json({
+            message: "An error occurred while fetching the property.",
+            error: error.message,
+        });
+    }
+};
+
+// Export all functions
+module.exports = {
+    listings,
+    add,
+    edit,
+    show
+};
