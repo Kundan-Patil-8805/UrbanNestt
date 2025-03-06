@@ -1,6 +1,7 @@
 const Property = require("../models/Property");
 const fs = require("fs");
 const multer = require("multer");
+const { uploadOnCloudinary } = require("../utils/cloudinary.js")
 
 // Multer configuration for file uploads
 const storage = multer.memoryStorage();
@@ -17,7 +18,6 @@ const listings = async (req, res) => {
     }
 };
 
-// Add a new property
 const add = async (req, res) => {
     try {
         const {
@@ -39,7 +39,6 @@ const add = async (req, res) => {
             total_floor,
             description,
             facing_direction,
-            image,
             loan_availability,
             estimated_monthly_emi,
             maintenance_fees,
@@ -64,6 +63,17 @@ const add = async (req, res) => {
             fire_safety_installed
         } = req.body;
 
+        // Ensure an image file is uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: "Property image is required." });
+        }
+
+        // Upload image to Cloudinary
+        const imageUpload = await uploadOnCloudinary(req.file.path); // Adjust utility as needed
+        if (!imageUpload || !imageUpload.url) {
+            throw new Error("Failed to upload property image.");
+        }
+
         // Create a new property document
         const newProperty = new Property({
             property_type,
@@ -84,7 +94,7 @@ const add = async (req, res) => {
             total_floor,
             description,
             facing_direction,
-            image,
+            image: imageUpload.url, // Store Cloudinary URL
             loan_availability,
             estimated_monthly_emi,
             maintenance_fees,
@@ -109,15 +119,20 @@ const add = async (req, res) => {
             fire_safety_installed
         });
 
-        // Save the property to the database
+        // Save to the database
         const savedProperty = await newProperty.save();
+
+        // Respond with success
         res.status(201).json({
-            message: 'Property created successfully',
-            property: savedProperty
+            message: "Property created successfully.",
+            property: savedProperty,
         });
     } catch (error) {
-        console.error('Error creating property:', error);
-        res.status(500).json({ message: 'Error creating property', error: error.message });
+        console.error("Error creating property:", error);
+        res.status(500).json({
+            message: "Error creating property.",
+            error: error.message,
+        });
     }
 };
 

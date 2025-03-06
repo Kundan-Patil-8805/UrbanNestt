@@ -1,23 +1,14 @@
-// const multer = require("multer");
-// const { CloudinaryStorage } = require("multer-storage-cloudinary");
-// const cloudinary = require("../utils/cloudinary");
-
-// const storage = new CloudinaryStorage({
-//     cloudinary: cloudinary,
-//     params: {
-//         folder: "properties", 
-//         allowed_formats: ["jpg", "png", "jpeg"], 
-//     },
-// });
-
-// const upload = multer({ storage });
-
-// module.exports = upload;
-
 const multer = require("multer");
+const path = require("path");
 
-// Use memory storage for multer
-const storage = multer.memoryStorage();
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "./public/temp"); // Temp storage location
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    },
+});
 
 const upload = multer({ storage });
 

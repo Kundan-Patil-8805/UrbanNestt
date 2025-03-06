@@ -1,11 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const propertyController = require('../controllers/Property');
+const propertyController = require("../controllers/Property");
+const upload = require("../middleware/multer"); // Use multer middleware
 
-// Routes
-router.get('/', propertyController.listings);
-router.post('/add', propertyController.add);
-router.put('/:id', propertyController.edit);
-router.get('/:id', propertyController.show);
+// Add a property with image upload
+router.post("/add", upload.single("image"), propertyController.add);
 
 module.exports = router;
+
+// router.post('/add', upload.single('image'), propertyController.add); // Use multer upload middleware
+// router.put('/:id', propertyController.edit);
+// router.get('/:id', propertyController.show);
+
+// module.exports = router;
